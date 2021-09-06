@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
 import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
 import com.skilldistillery.filmquery.entities.Actor;
@@ -67,27 +69,37 @@ private void findFilm(int choice, Scanner input) {
 		System.out.println("Please enter the film id:");
 		filmId = input.nextInt();
 		Film film = db.findFilmById(filmId);
-	    System.out.println(film);
-	    int langId = film.getLanguageId();
-	    displayLanguage(langId);
-		List<Actor> actors = new ArrayList<>();
-		actors = db.findActorsByFilmId(film.getId());
-		System.out.println(actors);
-	    System.out.println("");
+		if (film != null) {
+		    System.out.println(film);
+		    int langId = film.getLanguageId();
+		    displayLanguage(langId);
+			List<Actor> actors = new ArrayList<>();
+			actors = db.findActorsByFilmId(film.getId());
+			System.out.println(actors);
+		    System.out.println("");
+	    } else {
+	    	System.out.println("No film with that ID was found");
+	    }
 	    
 	}
 	else if (choice == 2) {
 		String keyword;
 		System.out.println("Please enter the film keyword:");
 		keyword = input.next();
-		Film film = db.findFilmByKeyword(keyword);
-	    System.out.println(film);
-	    int langId = film.getLanguageId();
-	    displayLanguage(langId);
-		List<Actor> actors = new ArrayList<>();
-		actors = db.findActorsByFilmId(film.getId());
-		System.out.println(actors);
-	    System.out.println("");
+		List<Film> films = db.findFilmByKeyword(keyword);
+		if (films != null) {
+			for(int i = 0; i < films.size(); i++) {
+			    System.out.println(films);
+			    int langId = films.get(i).getLanguageId();
+			    displayLanguage(langId);
+				List<Actor> actors = new ArrayList<>();
+				actors = db.findActorsByFilmId(films.get(i).getId());
+				System.out.println(actors);
+			    System.out.println("");
+				}
+	    } else {
+	    	System.out.println("No film with that keyword was found");
+	    }
 	}
 	
 }

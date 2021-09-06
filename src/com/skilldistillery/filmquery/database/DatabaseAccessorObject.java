@@ -61,7 +61,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		
 	}
 	@Override
-	public Film findFilmByKeyword(String keyWord) {
+	public List<Film> findFilmByKeyword(String keyWord) {
+		List<Film> films = new ArrayList<>();
 		Film film = null;
 		
 		try {
@@ -69,13 +70,13 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			String sql = "SELECT id, title, description, release_year, "
 					+ "language_id, rental_duration, rental_rate, length, "
 					+ "replacement_cost, rating, special_features FROM film "
-					+ "WHERE title LIKE '%" + keyWord + "%'";
+					+ "WHERE title LIKE '%" + keyWord + "%'";		
 			PreparedStatement stmt= conn.prepareStatement(sql);
 			//stmt.setString(1, keyWord); TODO figure out how to use the the 
 				//question mark for the key word
 			//System.out.println("DEBUG: " + stmt);
-			ResultSet rs = stmt.executeQuery();
-				if(rs.next()) {
+		    ResultSet rs = stmt.executeQuery();
+		    while (rs.next()) {
 					film = new Film();
 					film.setId(rs.getInt(1));
 					film.setTitle(rs.getString(2));
@@ -86,14 +87,15 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 					film.setLength(rs.getInt(7));
 					film.setReplacementCost(rs.getDouble(8));
 					film.setRating(rs.getString(9));
-					film.setSpecialFeatures(rs.getString(10));	
+					film.setSpecialFeatures(rs.getString(10));
+					films.add(film);
 				}
 		
 		} catch (SQLException e) {
 			System.err.println("Database error");
 			System.err.println(e);
 		}
-		return film;
+		return films;
 		
 	}
 
@@ -127,7 +129,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		    Connection conn = DriverManager.getConnection(URL, user, pw);
 		    String sql = "SELECT id, first_name, last_name \n"
 		    		+ "FROM actor \n"
-		    		+ "  JOIN film_actor ON actor.id = film_actor.film_id \n"
+		    		+ "  JOIN film_actor ON actor.id = film_actor.actor_id \n"
 		    		+ "WHERE film_id = ?;";
 		    PreparedStatement stmt = conn.prepareStatement(sql);
 		    stmt.setInt(1, filmId);
