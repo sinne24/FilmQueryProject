@@ -89,7 +89,7 @@ private void findFilm(int choice, Scanner input) {
 		List<Film> films = db.findFilmByKeyword(keyword);
 		if (films != null) {
 			for(int i = 0; i < films.size(); i++) {
-			    System.out.println(films);
+			    System.out.println(films.get(i));
 			    int langId = films.get(i).getLanguageId();
 			    displayLanguage(langId);
 				List<Actor> actors = new ArrayList<>();

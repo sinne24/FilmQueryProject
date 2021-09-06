@@ -70,10 +70,9 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			String sql = "SELECT id, title, description, release_year, "
 					+ "language_id, rental_duration, rental_rate, length, "
 					+ "replacement_cost, rating, special_features FROM film "
-					+ "WHERE title LIKE '%" + keyWord + "%'";		
+					+ "WHERE title LIKE ?";		
 			PreparedStatement stmt= conn.prepareStatement(sql);
-			//stmt.setString(1, keyWord); TODO figure out how to use the the 
-				//question mark for the key word
+			stmt.setString(1, "%"+keyWord+"%"); 
 			//System.out.println("DEBUG: " + stmt);
 		    ResultSet rs = stmt.executeQuery();
 		    while (rs.next()) {
@@ -89,6 +88,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 					film.setRating(rs.getString(9));
 					film.setSpecialFeatures(rs.getString(10));
 					films.add(film);
+					System.out.println(film);
 				}
 		
 		} catch (SQLException e) {
